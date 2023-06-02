@@ -1,6 +1,8 @@
 const client = require("./client");
 
-async function createRoutine({ creatorId, isPublic, name, goal }) {}
+async function createRoutine({ creatorId, isPublic, name, goal }) {
+  
+}
 
 async function getRoutineById(id) {}
 

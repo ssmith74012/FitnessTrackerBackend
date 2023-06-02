@@ -1,15 +1,69 @@
 // require in the database adapter functions as you write them (createUser, createActivity...)
 // const { } = require('./');
-const client = require("./client")
+const {
+  createUser,
+  } = require('./users');
+
+  const client = require('./client.js');
+
+  // const {
+  //   client,
+  //   } = require('./client');
+    // client.connect();
+
 
 async function dropTables() {
+  try {
   console.log("Dropping All Tables...")
   // drop all tables, in the correct order
+  
+   await client.query(`
+   DROP TABLE IF EXISTS routines;
+    DROP TABLE IF EXISTS activities;
+    DROP TABLE IF EXISTS users CASCADE;
+    `
+  );
+  
+  console.log("Finished dropping tables!");
+} catch(error) {
+  console.error("Error while dropping tables!");
+
+  throw error;
+}
 }
 
 async function createTables() {
-  console.log("Starting to build tables...")
+  try {
+  console.log("Starting to create tables...");
   // create all tables, in the correct order
+  
+  await client.query(` 
+    CREATE TABLE users(
+      id SERIAL PRIMARY KEY,
+      username VARCHAR(255) UNIQUE NOT NULL,
+      password VARCHAR(255) NOT NULL
+    );
+    
+    CREATE TABLE routines(
+      id SERIAL PRIMARY KEY,
+      "creatorId" INTEGER REFERENCES users(id),
+      "isPublic" BOOLEAN DEFAULT false,
+      name VARCHAR(255) NOT NULL,
+      goal TEXT NOT NULL
+    );
+    
+    CREATE TABLE activities(
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      descrption TEXT NOT NULL
+    );`
+  );
+  console.log("Finished creating tables!");
+} catch (error) {
+  console.error("Error creating tables!");
+
+  throw error;
+}
 }
 
 /* 
@@ -179,6 +233,8 @@ async function createInitialRoutineActivities() {
 
 async function rebuildDB() {
   try {
+     
+
     await dropTables()
     await createTables()
     await createInitialUsers()
@@ -195,4 +251,6 @@ module.exports = {
   rebuildDB,
   dropTables,
   createTables,
+  createUser,
+
 }
