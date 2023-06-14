@@ -1,10 +1,10 @@
-/*
+/* 
 
 DO NOT CHANGE THIS FILE
 
 */
 require("dotenv").config();
-const client = require("../../db/client");
+const client = require('../../db/client');
 const {
   getAllActivities,
   createActivity,
@@ -15,20 +15,9 @@ const {
 const { createFakeActivity } = require("../helpers");
 
 describe("DB Activities", () => {
-  describe("createActivity({ name, description })", () => {
-    xit("Creates and returns the new activity", async () => {
-      const activityToCreate = {
-        name: "Marathon",
-        description: "Run all the miles",
-      };
-      const createdActivity = await createActivity(activityToCreate);
-      expect(createdActivity.name).toBe(activityToCreate.name);
-      expect(createdActivity.description).toBe(activityToCreate.description);
-    });
-  });
 
   describe("getAllActivities", () => {
-    xit("Selects and returns an array of all activities", async () => {
+    it("selects and returns an array of all activities", async () => {
       await createFakeActivity("Sit ups", "Do 100 reps");
       const activities = await getAllActivities();
       const { rows: activitiesFromDatabase } = await client.query(`
@@ -39,9 +28,11 @@ describe("DB Activities", () => {
   });
 
   describe("getActivityById", () => {
-    xit("Gets activities by their id", async () => {
+    it("gets activities by their id", async () => {
       const fakeActivity = await createFakeActivity("Crunches", "Do 40 reps");
+
       const activity = await getActivityById(fakeActivity.id);
+
       expect(activity.id).toEqual(fakeActivity.id);
       expect(activity.name).toEqual(fakeActivity.name);
       expect(activity.description).toEqual(fakeActivity.description);
@@ -49,22 +40,28 @@ describe("DB Activities", () => {
   });
 
   describe("getActivityByName", () => {
-    xit("Gets an activity by it's name", async () => {
-      const fakeActivity = await createFakeActivity(
-        "Power Walking",
-        "At the mall"
-      );
+    it("gets an activity by it's name", async () => {
+      const fakeActivity = await createFakeActivity("Power Walking", "At the mall");
       const activity = await getActivityByName(fakeActivity.name);
       expect(activity.id).toEqual(fakeActivity.id);
     });
   });
 
+  describe("createActivity({ name, description })", () => {
+    it("Creates and returns the new activity", async () => {
+      const activityToCreate = {
+        name: "Marathon",
+        description: "Run all the miles",
+      };
+      const createdActivity = await createActivity(activityToCreate);
+      expect(createdActivity.name).toBe(activityToCreate.name);
+      expect(createdActivity.description).toBe(activityToCreate.description);
+    });
+  });
+
   describe("updateActivity", () => {
-    xit("Updates name without affecting the ID. Returns the updated Activity.", async () => {
-      const fakeActivity = await createFakeActivity(
-        "Baseball",
-        "Run the bases"
-      );
+    it("Updates name without affecting the ID. Returns the updated Activity.", async () => {
+      const fakeActivity = await createFakeActivity("Baseball", "Run the bases");
       const name = "Softball";
       const updatedActivity = await updateActivity({
         id: fakeActivity.id,
@@ -75,7 +72,7 @@ describe("DB Activities", () => {
       expect(updatedActivity.description).toEqual(fakeActivity.description);
     });
 
-    xit("Updates description without affecting the ID. Returns the updated Activity.", async () => {
+    it("Updates description without affecting the ID. Returns the updated Activity.", async () => {
       const fakeActivity = await createFakeActivity("Soccer", "After school");
       const description = "Football is life!";
       const updatedActivity = await updateActivity({
